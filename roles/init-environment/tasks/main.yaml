@@ -1,0 +1,36 @@
+- name: stop SElinux
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: "SELINUX=disabled"
+    state: present
+
+- name: stop swapoff
+  shell: swapoff -a
+
+- name: modify /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    regexp: '^/dev/mapper/centos-swap'
+    state: absent
+
+- name: stop firewalld
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+
+- name: install dependency package
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - net-tools
+    - telnet
+    - tree
+    - nmap
+    - sysstat
+    - lrzsz
+    - dos2unix
+    - bind-utils

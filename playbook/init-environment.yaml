@@ -1,0 +1,5 @@
+- name: environment init
+  gather_facts: false
+  hosts: all
+  roles:
+    - init-environment

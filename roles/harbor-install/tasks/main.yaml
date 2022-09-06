@@ -1,0 +1,28 @@
+- name: cp harbor install package to remote
+  copy:
+    src: /etc/ansible/package/harbor-offline-installer-v2.5.3.tar
+    dest: /opt
+
+- name: tar harbor-offline-install
+  shell: tar -xf /opt/harbor-offline-installer-v2.5.3.tar
+
+- name: template harbor.yaml to remote
+  template:
+    src: harbor.yml.j2
+    dest: /opt/harbor/
+
+- name: mkdir data_root dir
+  file:
+    path: /data/harbor
+    state: directory
+
+- name: start harbor
+  shell: sh install.sh
+  args:
+    chdir: /opt/harbor
+
+- name: modify /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "10.4.7.10  harbor.deveco.com"  #fixme 根据本地IP来配置
+    state: present

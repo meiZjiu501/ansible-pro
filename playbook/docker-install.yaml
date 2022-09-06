@@ -1,0 +1,11 @@
+- name: install docker
+  gather_facts: false
+  hosts: all
+  roles:
+    - docker-install
+
+- name: install harbor
+  gather_facts: false
+  hosts: harbor
+  roles:
+    - harbor-install
