@@ -40,3 +40,15 @@
     path: /etc/sysconfig/network-scripts/ifcfg-ens33
     line: '10.4.7.11'
     state: present
+
+- name: add host.com to resolv.conf
+  shell: 'sed -i "2isearch host.com"  /etc/resolv.conf '
+
+- name: change /etc/rc.local
+  lineinfile:
+    path: /etc/rc.d/local
+    line: "sed -i \"2isearch host.com\"  /etc/resolv.conf "
+    state: present
+
+- name: change rc.local scripe mode
+  shell: "chmod 777 /etc/rc.d/rc.local"
