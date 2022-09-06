@@ -34,3 +34,9 @@
     - lrzsz
     - dos2unix
     - bind-utils
+
+- name: change DNS addresses
+  lineinfile:
+    path: /etc/sysconfig/network-scripts/ifcfg-ens33
+    line: '10.4.7.11'
+    state: present
