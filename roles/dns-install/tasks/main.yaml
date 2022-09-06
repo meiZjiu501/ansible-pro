@@ -1,29 +1,29 @@
-#- name: install dns
-#  yum:
-#    name: bind
-#    state: present
+- name: install dns
+  yum:
+    name: bind
+    state: present
 
 - name: copy config1 to remote
-  template:
-    src: named.conf.j2
+  copy:
+    src: files/named.conf
     dest: /etc/named.conf
     force: yes
 
 - name: copy config2 to remote
-  template:
-    src: named.rfc1912.zones.j2
+  copy:
+    src: files/named.rfc1912.zones
     dest: /etc/named.rfc1912.zones
     force: yes
 
 - name: copy config3 to remote
-  template:
-    src: host.com.zone.j2
+  copy:
+    src: files/host.com.zone
     dest: /var/named/host.com.zone
     force: yes
 
 - name: copy config4 to remote
-  template:
-    src: od.com.zone.j2
+  copy:
+    src: files/od.com.zone
     dest: /var/named/od.com.zone
     force: yes
 
@@ -31,4 +31,4 @@
   systemd:
     name: named
     enabled: yes
-    state: started
+    state: restarted
