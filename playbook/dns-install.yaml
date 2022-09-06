@@ -1,5 +1,5 @@
 - name: dns install
   gather_facts: false
-  hosts: qiaofu
+  hosts: nongfu
   roles:
     - dns-install
