@@ -1,17 +1,27 @@
 - name: mkdir docker_root dir
   file:
-    path: /opt/docker
+    path: /data/docker
     state: directory
 
 - name: copy rpm to remote
   copy:
-    src: /etc/ansible/package/docker-ce-18.06.3.ce-3.el7.x86_64.rpm
-    dest: /opt/docker
+    src: "{{ packages }}"
+    dest: /data/docker
+  vars:
+    packages:
+    - /etc/ansible/package/docker-ce-18.06.3.ce-3.el7.x86_64.rpm
+    - /etc/ansible/package/docker-distribution-2.6.2-2.git48294d9.el7.x86_64.rpm
 
-- name: copy rpm to remote
-  copy:
-    src: /etc/ansible/package/docker-distribution-2.6.2-2.git48294d9.el7.x86_64.rpm
-    dest: /opt/docker
+
+#- name: copy rpm to remote
+#  copy:
+#    src: /etc/ansible/package/docker-ce-18.06.3.ce-3.el7.x86_64.rpm
+#    dest: /data/docker
+
+#- name: copy rpm to remote
+#  copy:
+#    src: /etc/ansible/package/docker-distribution-2.6.2-2.git48294d9.el7.x86_64.rpm
+#    dest: /data/docker
 
 - name: install docker rpm
   yum:
@@ -19,8 +29,8 @@
     state: present
   vars:
     packages:
-    - /opt/docker/docker-ce-18.06.3.ce-3.el7.x86_64.rpm
-    - /opt/docker/docker-distribution-2.6.2-2.git48294d9.el7.x86_64.rpm
+    - /data/docker/docker-ce-18.06.3.ce-3.el7.x86_64.rpm
+    - /data/docker/docker-distribution-2.6.2-2.git48294d9.el7.x86_64.rpm
 
 - name: mkdir /etc/docker
   file:
@@ -40,4 +50,4 @@
     daemon_reload: yes
 
 - name: login docker registry
-  shell: docker login http://harbor.deveco.com:80  -u 'admin' -p 'Harbor12345'    #fixme username password 与配置文件中相同
+  shell: "docker login http://harbor.deveco.com:80  -u 'admin' -p 'Harbor12345' "   #fixme username password 与配置文件中相同
