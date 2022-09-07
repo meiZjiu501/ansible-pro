@@ -1,0 +1,38 @@
+- name: copy cfssl tools-01 to remote
+  copy:
+    src: package/cfssl-certinfo_linux-amd64
+    dest: /usr/local/sbin/cfssl-certinfo
+    mode: 0777
+    user: root
+    group: root
+
+- name: copy cfssl tools-02 to remote
+  copy:
+    src: package/cfssljson_linux-amd64
+    dest: /usr/local/sbin/cfssl-json
+    mode: 0777
+    user: root
+    group: root
+
+- name: copy cfssl tools-03 to remote
+  copy:
+    src: package/cfssl_linux-amd64
+    dest: /usr/local/sbin/cfssl
+    mode: 0777
+    user: root
+    group: root
+
+- name: mkdir /opt/certs to ca
+  file:
+    path: /opt/certs
+    state: directory
+
+- name: create ca.jason on /opt/certs
+  template:
+    src: ca-csr.json.j2
+    dest: /opt/certs/ca-csr.json
+
+- name: creat ca.pem
+  shell: 'cfssl gencert -initca ca-csr.json | cfssl-json -bare ca'
+  args:
+    chdir: /opt/certs/
