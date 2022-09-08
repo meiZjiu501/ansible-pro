@@ -1,0 +1,14 @@
+- name: cp docker compose package to remote
+  copy:
+    src: /etc/ansible/package/docker-compose-linux-x86_64
+    dest: /usr/local/sbin/
+
+- name: change name of docker compose
+  shell: "mv docker-compose-linux-x86_64 docker-compose"
+  args:
+    chdir: /usr/local/sbin/
+
+- name: chmod permission
+  shell: "chmod a+x docker-compose"
+  args:
+    chdir: /usr/local/sbin/
