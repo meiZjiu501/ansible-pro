@@ -1,8 +1,14 @@
 - name: install docker
   gather_facts: false
-  hosts: all
+  hosts: docker
   roles:
     - docker-install
+
+- name: install docker-compose
+  gather_facts: false
+  hosts: harbor
+  roles:
+    - docker-compose-install
 
 - name: install harbor
   gather_facts: false
