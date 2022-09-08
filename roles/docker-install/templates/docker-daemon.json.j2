@@ -3,7 +3,7 @@
   "storage-driver": "overlay2",
   "insecure-registries": ["registry.access.redhat.com","quay.io","harbor.od.com","harbor.od.com:180"],
   "registry-mirrors": ["https://6kx4zyno.mirror.aliyuncs.com"],
-  "bip": "172.7.21.1/24",  #fixme bip 是指定docker容器的网段，可以通过查看容器IP来得知容器位于那个节点，此项改成与当前节点IP相同的地址
+  "bip": "172.7.21.1/24",
   "exec-opts": ["native.cgroupdriver=systemd"],
   "live-restore": true
 }
