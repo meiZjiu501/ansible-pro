@@ -1,0 +1,77 @@
+#安装etcd
+- name: create etcd user to remote
+  user:
+    name: etcd
+    shell: /sbin/nologin
+    state: present
+
+- name: unarchive etcd.tar to remote
+  unarchive:
+    src: /etc/ansible/package/etcd-v3.1.20-linux-amd64.tar.gz
+    dest: /opt/
+    owner: etcd
+    group: etcd
+    mode: 0755
+
+- name: create symolink etcd work dir
+  file:
+    src: /opt/etcd-v3.1.20-linux-amd64
+    path: /opt/etcd
+    force: yes
+    state: link
+    owner: etcd
+    group: etcd
+
+- name: mkdir etcd data dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+    owner: etcd
+    group: etcd
+    mode: 0755
+  loop:
+    - /opt/etcd/certs/
+    - /data/etcd/etcd-server/
+    - /data/logs/etcd-server/
+
+- name: copy communicate certification to remote
+  copy:
+    src: "{{ item }}"
+    dest: /opt/etcd/certs/
+  loop:
+    - /etc/ansible/roles/etcd-install/files/ca.pem
+    - /etc/ansible/roles/etcd-install/files/etcd-peer-key.pem
+    - /etc/ansible/roles/etcd-install/files/etcd-peer.pem
+
+#创建etcd启动脚本
+- name: copy startup.sh to remote
+  template:
+    src: etcd-server-startup.sh.j2
+    dest: /opt/etcd/etcd-server-startup.sh
+    owner: etcd
+    group: etcd
+    mode: 0777
+
+#安装supervisord工具
+- name: wget epel.repo
+  get_url:
+    url: http://mirrors.aliyun.com/repo/epel-7.repo
+    dest: /etc/yum.repos.d/epel.repo
+    mode: 0440
+
+- name: yum makecache
+  shell: "yum clean all && yum makecache"
+
+- name: install supervisor
+  yum:
+    name: supervisor
+    state: present
+
+- name: systemd supervisor
+  systemd:
+    name: supervisord
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
