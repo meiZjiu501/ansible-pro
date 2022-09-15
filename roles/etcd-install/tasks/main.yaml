@@ -83,3 +83,9 @@
     owner: etcd
     group: etcd
     mode: 0777
+
+#启动每个节点etcd进程
+- name: start etcd process by supervisord
+  shell: "/usr/bin/supervisorctl update"
+  args:
+    chdir: /opt/etcd/
