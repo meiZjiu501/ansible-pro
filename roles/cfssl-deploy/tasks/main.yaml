@@ -1,38 +1,64 @@
-- name: copy cfssl tools-01 to remote
-  copy:
-    src: package/cfssl-certinfo_linux-amd64
-    dest: /usr/local/sbin/cfssl-certinfo
-    mode: 0777
-    user: root
-    group: root
+#签发根证书
+#- name: copy cfssl tools-01 to remote
+#  copy:
+#    src: package/cfssl-certinfo_linux-amd64
+#    dest: /usr/local/sbin/cfssl-certinfo
+#    mode: 0777
+#    user: root
+#    group: root
 
-- name: copy cfssl tools-02 to remote
-  copy:
-    src: package/cfssljson_linux-amd64
-    dest: /usr/local/sbin/cfssl-json
-    mode: 0777
-    user: root
-    group: root
+#- name: copy cfssl tools-02 to remote
+#  copy:
+#    src: package/cfssljson_linux-amd64
+#    dest: /usr/local/sbin/cfssl-json
+#    mode: 0777
+#    user: root
+#    group: root
 
-- name: copy cfssl tools-03 to remote
-  copy:
-    src: package/cfssl_linux-amd64
-    dest: /usr/local/sbin/cfssl
-    mode: 0777
-    user: root
-    group: root
+#- name: copy cfssl tools-03 to remote
+#  copy:
+#    src: package/cfssl_linux-amd64
+#    dest: /usr/local/sbin/cfssl
+#    mode: 0777
+#    user: root
+#    group: root
 
-- name: mkdir /opt/certs to ca
-  file:
-    path: /opt/certs
-    state: directory
+#- name: mkdir /opt/certs to ca
+#  file:
+#    path: /opt/certs
+#    state: directory
 
-- name: create ca.jason on /opt/certs
-  template:
-    src: ca-csr.json.j2
-    dest: /opt/certs/ca-csr.json
+#- name: create ca.jason on /opt/certs
+#  template:
+#    src: ca-csr.json.j2
+#    dest: /opt/certs/ca-csr.json
 
-- name: creat ca.pem
-  shell: 'cfssl gencert -initca ca-csr.json | cfssl-json -bare ca'
-  args:
-    chdir: /opt/certs/
+#- name: creat ca.pem
+#  shell: 'cfssl gencert -initca ca-csr.json | cfssl-json -bare ca'
+#  args:
+#    chdir: /opt/certs/
+
+#签发etcd 证书
+#- name: copy ca-config.json to remote
+#  template:
+#    src: ca-config.json.j2
+#    dest: /opt/certs/ca-config.json
+
+#- name: copy etcd-peer-csr.json to remote
+#  template:
+#    src: etcd-peer-csr.json.j2
+#    dest: /opt/certs/etcd-peer-csr.json
+
+#- name: certificate sign to console
+#  shell: "cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer etcd-peer-csr.json | cfssl-json -bare etcd-peer"
+#  args:
+#    chdir: /opt/carts/
+
+#- name: copy certification to install dir
+#  copy:
+#    src: "{{ item }}"
+#    dest: /etc/ansible/roles/etcd-install/files/
+#  loop:
+#    - /opt/certs/ca.pem
+#    - /opt/certs/etcd-peer-key.pem
+#    - /opt/certs/etcd-peer.pem
