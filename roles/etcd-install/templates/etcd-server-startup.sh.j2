@@ -3,13 +3,13 @@
 WORK_DIR=$(dirname $(readlink -f $0))
 [ $? -eq 0 ] && cd $WORK_DIR || exit
 
-/opt/etcd/etcd --name etcd-server-7-12 \
+/opt/etcd/etcd --name etcd-server-7-12 \  #fixme 修改每个节点对应的name
     --data-dir /data/etcd/etcd-server \
-    --listen-peer-urls https://10.4.7.12:2380 \
-    --listen-client-urls https://10.4.7.12:2379,http://127.0.0.1:2379 \
+    --listen-peer-urls https://10.4.7.12:2380 \  #fixme 修改为对应节点IP
+    --listen-client-urls https://10.4.7.12:2379,http://127.0.0.1:2379 \  #fixme 修改为对应节点IP
     --quota-backend-bytes 8000000000 \
-    --initial-advertise-peer-urls https://10.4.7.12:2380 \
-    --advertise-client-urls https://10.4.7.12:2379,http://127.0.0.1:2379 \
+    --initial-advertise-peer-urls https://10.4.7.12:2380 \  #fixme 修改为对应节点IP
+    --advertise-client-urls https://10.4.7.12:2379,http://127.0.0.1:2379 \  #fixme 修改为对应节点IP
     --initial-cluster  etcd-server-7-12=https://10.4.7.12:2380,etcd-server-7-21=https://10.4.7.21:2380,etcd-server-7-22=https://10.4.7.22:2380 \
     --ca-file ./certs/ca.pem \
     --cert-file ./certs/etcd-peer.pem \
