@@ -75,3 +75,11 @@
     enabled: yes
     daemon_reload: yes
 
+#分发supervisor的控制脚本到每个etcd节点
+- name: template etcd-server.ini.j2 to every etcd node
+  template:
+    src: etcd-server.ini.j2
+    dest: /etc/supervisord.d/etcd-server.ini
+    owner: etcd
+    group: etcd
+    mode: 0777
