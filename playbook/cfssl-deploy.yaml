@@ -1,0 +1,5 @@
+- name: certification sgin
+  gather_facts: false
+  hosts: cfssl
+  roles:
+    - cfssl-deploy
