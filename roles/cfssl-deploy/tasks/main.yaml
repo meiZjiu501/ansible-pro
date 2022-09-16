@@ -62,3 +62,53 @@
 #    - /opt/certs/ca.pem
 #    - /opt/certs/etcd-peer-key.pem
 #    - /opt/certs/etcd-peer.pem
+
+#apiserver签发server端证书
+#- name: copy apiserver-csr.json to remote
+#  template:
+#    src: apiserver-csr.json.j2
+#    dest: /opt/certs/apiserver-csr.json
+
+#- name: "发送签发server证书脚本"
+#  template:
+#    src: server-apiserver.sh.j2
+#    dest: /opt/certs/server-apiserver.sh
+
+#- name: "签发server-aipserver证书"
+#  shell: "sh server-apiserver.sh"
+#  args:
+#    chdir: /opt/certs/
+
+#- name: "复制server-apiserver 证书到files"
+#  copy:
+#    src: "{{ item }}"
+#    dest: /etc/ansible/roles/apiserver-install/files/
+#  loop:
+#    - /opt/certs/ca.pem
+#    - /opt/certs/ca-key.pem
+#    - /opt/certs/apiserver-key.pem
+#    - /opt/certs/apiserver.pem
+
+##apiserver签发client端证书
+#- name: copy client-csr.json to remote
+#  template:
+#    src: client-csr.json.j2
+#    dest: /opt/certs/client-csr.json
+
+#- name: "发送签发client证书脚本"
+#  template:
+#    src: client-apiserver.sh.j2
+#    dest: /opt/certs/client-apiserver.sh
+
+#- name: "签发client-aipserver证书"
+#  shell: "sh client-apiserver.sh"
+#  args:
+#    chdir: /opt/certs/
+
+#- name: "复制client-apiserver 证书到files"
+#  copy:
+#    src: "{{ item }}"
+#    dest: /etc/ansible/roles/apiserver-install/files/
+#  loop:
+#    - /opt/certs/client.pem
+#    - /opt/certs/client-key.pem
