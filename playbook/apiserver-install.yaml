@@ -1,0 +1,5 @@
+- name: apiserver install
+  gather_facts: false
+  hosts: apiserver
+  roles:
+    - apiserver-install

@@ -1,0 +1,60 @@
+- name: "服务kubernetes安装包到master节点"
+  unarchive:
+    src: /etc/ansible/package/kubernetes-v1.19.4.tar.gz
+    dest: /opt
+
+- name: "链接k8s根目录"
+  file:
+    src: /opt/kubernetes-v1.19.4
+    dest: /opt/kubernetes
+    force: yes
+    state: link
+
+- name: "创建证书目录cert"
+  file:
+    path: /opt/kubernetes/server/bin/cert/
+    state: directory
+
+- name: "复制证书到master节点"
+  copy:
+    src: "{{ item }}"
+    dest: /opt/kubernetes/server/bin/cert/
+  loop:
+    - /etc/ansible/roles/apiserver-install/files/ca.pem
+    - /etc/ansible/roles/apiserver-install/files/ca-key.pem
+    - /etc/ansible/roles/apiserver-install/files/apiserver.pem
+    - /etc/ansible/roles/apiserver-install/files/apiserver-key.pem
+    - /etc/ansible/roles/apiserver-install/files/client.pem
+    - /etc/ansible/roles/apiserver-install/files/client-key.pem
+
+- name: "创建审计日志目录"
+  file:
+    path: /opt/kubernetes/server/bin/conf/
+    state: directory
+
+- name: "创建审计日志文件"
+  template:
+    src: audit.yaml.j2
+    dest: /opt/kubernetes/server/bin/conf/audit.yaml
+
+- name: "发送apiserver启动脚本到master"
+  template:
+    src: kube-apiserver-startup.sh.j2
+    dest: /opt/kubernetes/server/bin/kube-apiserver-startup.sh
+    mode: 0777
+
+
+- name: "创建日志apiserver日志目录"
+  file:
+    path: /data/logs/kubernetes/kube-apiserver
+    state: directory
+
+- name: "发送supervisor控制文件到master节点"
+  template:
+    src: kube-apiserver.ini.j2
+    dest: /etc/supervisord.d/kube-apiserver.ini
+
+- name: "启动supervisord，启动apiserver进程"
+  shell: "/usr/bin/supervisorctl update"
+  args:
+    chdir: /opt/kubernetes/server/bin/
