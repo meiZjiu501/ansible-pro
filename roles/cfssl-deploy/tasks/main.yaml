@@ -112,3 +112,27 @@
 #  loop:
 #    - /opt/certs/client.pem
 #    - /opt/certs/client-key.pem
+
+#签发kubelet server证书
+- name: "发送kubelet证书文件到证书签发目录"
+  template:
+    src: kubelet-csr.json.j2
+    dest: /opt/certs/kubelet-csr.json
+
+- name: "发送签发kubelet证书脚本"
+  template:
+    src: server-kubelet.sh.j2
+    dest: /opt/certs/server-kubelet.sh
+
+- name: "签发kubelet server证书"
+  shell: "sh server-kubelet.sh"
+  args:
+    chdir: /opt/certs/
+
+- name: "复制client-apiserver 证书到files"
+  copy:
+    src: "{{ item }}"
+    dest: /etc/ansible/roles/kubelet-install/files/
+  loop:
+    - /opt/certs/kubelet.pem
+    - /opt/certs/kubelet-key.pem
