@@ -1,0 +1,5 @@
+- name: kubelet install
+  gather_facts: false
+  hosts: kubelet
+  roles:
+    - kubelet-install

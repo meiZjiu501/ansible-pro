@@ -1,0 +1,65 @@
+#创建kubelet配置
+- name: "发送kubelet证书到master"
+  copy:
+    src: "{{ item }}"
+    dest: /opt/kubernetes/server/bin/cert
+  loop:
+    - /etc/ansible/roles/kubelet-install/files/kubelet.pem
+    - /etc/ansible/roles/kubelet-install/files/kubelet-key.pem
+
+- name: "发送kubelet执行脚本"
+  copy:
+    src: files/kubelet-deploy.sh
+    dest: /opt/kubernetes/server/bin/conf/
+    mode: 0777
+  when: (inventory_hostname == "10.4.7.21")
+
+- name: "执行kubelet-deploy脚本"
+  shell: "sh kubelet-deploy.sh"
+  args:
+    chdir: /opt/kubernetes/server/bin/conf/
+  when: (inventory_hostname == "10.4.7.21")
+
+#授权k8s-node用户
+- name: "发送k8s-node.yaml 文件"
+  copy:
+    src: files/k8s-node.yaml
+    dest: /opt/kubernetes/server/bin/conf/
+  when: (inventory_hostname == "10.4.7.21")
+
+- name: "执行kubectl 命令"
+  shell: "kubectl create -f k8s-node.yaml"
+  args:
+    chdir: /opt/kubernetes/server/bin/conf/
+  when: (inventory_hostname == "10.4.7.21")
+
+#- name: "另一个master节点复制此节点的kubelet.kubeconfig 文件"
+
+- name: "发送kubelet启动脚本到master721"
+  copy:
+    src: files/kubelet-721-startup.sh
+    dest: /opt/kubernetes/server/bin/kubelet-startup.sh
+    mode: 0777
+  when: (inventory_hostname == "10.4.7.21")
+
+- name: "发送kubelet启动脚本到master722"
+  copy:
+    src: files/kubelet-722-startup.sh
+    dest: /opt/kubernetes/server/bin/kubelet-startup.sh
+    mode: 0777
+  when: (inventory_hostname == "10.4.7.22")
+
+- name: "创建kubelet日志目录"
+  file:
+    path: /data/logs/kubernetes/kube-kubelet
+    state: directory
+
+- name: "发送supervisor控制文件"
+  copy:
+    src: files/kube-kubelet.ini
+    dest: /etc/supervisord.d/kube-kubelet.ini
+
+- name: "启动supervisord，启动kubelet进程"
+  shell: "/usr/bin/supervisorctl update"
+  args:
+    chdir: /opt/kubernetes/server/bin/
