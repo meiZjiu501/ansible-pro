@@ -1,0 +1,5 @@
+- name: kube-scheduler install
+  gather_facts: false
+  hosts: scheduler
+  roles:
+    - kube-scheduler-install
