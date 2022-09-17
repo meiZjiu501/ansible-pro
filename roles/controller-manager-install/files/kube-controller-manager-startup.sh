@@ -4,7 +4,7 @@ WORK_DIR=$(dirname $(readlink -f $0))
 
 /opt/kubernetes/server/bin/kube-controller-manager \
     --cluster-cidr 172.7.0.0/16 \
-    --leader-elect true \
+    --leader-elect \
     --log-dir /data/logs/kubernetes/kube-controller-manager \
     --master http://127.0.0.1:8080 \
     --service-account-private-key-file ./cert/ca-key.pem \
