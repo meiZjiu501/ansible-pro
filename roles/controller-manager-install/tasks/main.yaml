@@ -1,0 +1,20 @@
+- name: "发送controller-manager 启动脚本"
+  copy:
+    src: files/kube-controller-manager-startup.sh
+    dest: /opt/kubernetes/server/bin/kube-controller-manager-startup.sh
+    mode: 0777
+
+- name: "发送supervisor控制文件"
+  copy:
+    src: files/kube-controller-manager.ini
+    dest: /etc/supervisord.d/kube-controller-manager.ini
+
+- name: "创建controller-manager 日志目录"
+  file:
+    path: /data/logs/kubernetes/kube-controller-manager
+    state: directory
+
+- name: "启动supervisord，启动controller-manager进程"
+  shell: "/usr/bin/supervisorctl update"
+  args:
+    chdir: /opt/kubernetes/server/bin/

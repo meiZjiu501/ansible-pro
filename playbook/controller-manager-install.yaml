@@ -1,0 +1,5 @@
+- name: controller-manager install
+  gather_facts: false
+  hosts: controller-manager
+  roles:
+    - controller-manager-install
