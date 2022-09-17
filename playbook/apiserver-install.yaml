@@ -1,8 +1,8 @@
-#- name: apiserver install
-#  gather_facts: false
-#  hosts: apiserver
-#  roles:
-#    - apiserver-install
+- name: apiserver install
+  gather_facts: false
+  hosts: apiserver
+  roles:
+    - apiserver-install
 
 - name: "安装nginx代理和keepalived"
   gather_facts: false
